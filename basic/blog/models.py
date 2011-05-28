@@ -41,6 +41,7 @@ class Post(models.Model):
     author = models.ForeignKey(User, blank=True, null=True)
     body = models.TextField(_('body'), )
     tease = models.TextField(_('tease'), blank=True, help_text=_('Concise text suggested. Does not appear in RSS feed.'))
+    visits = models.IntegerField(_('visits'), default=0, editable=False)
     status = models.IntegerField(_('status'), choices=STATUS_CHOICES, default=2)
     allow_comments = models.BooleanField(_('allow comments'), default=True)
     publish = models.DateTimeField(_('publish'), default=datetime.datetime.now)

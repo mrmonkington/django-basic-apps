@@ -1,11 +1,12 @@
 import datetime
 import re
+import time
 
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import Http404
 from django.views.generic import date_based, list_detail
-from django.db.models import Q
+from django.db.models import Q, F
 from django.conf import settings
 
 from basic.blog.models import *
@@ -67,19 +68,47 @@ def post_detail(request, slug, year, month, day, **kwargs):
     Displays post detail. If user is superuser, view will display 
     unpublished post detail for previewing purposes.
     """
-    posts = None
-    if request.user.is_superuser:
-        posts = Post.objects.all()
-    else:
-        posts = Post.objects.published()
+
+    # Allow both 3-letter month abbreviations and month as decimal number.
+    month_format = '%b'
+    if len(month) < 3:
+        month_format = '%m'
+
+    # This duplicates date_base.object_detail() but allows the view count to be
+    # incremented.
+    try:
+        tt = time.strptime('%s-%s-%s' % (year, month, day), '%%Y-%s-%%d' % month_format)
+    except ValueError:
+        raise Http404
+
+    # Get the post or 404
+    post = get_object_or_404(
+        Post,
+        slug=slug,
+        publish__year=tt.tm_year,
+        publish__month=tt.tm_mon,
+        publish__day=tt.tm_mday
+    )
+
+    # If the user isn't super and the post is not public, do not allow viewing.
+    if not request.user.is_superuser and post.status != 2:
+        raise Http404
+
+    # If the user's IP is not specified as internal, increase the post's view
+    # count.
+    if not request.META.get('REMOTE_ADDR') in settings.INTERNAL_IPS:
+        post.visits = F('visits') + 1
+        post.save()
+
     return date_based.object_detail(
         request,
-        year=year,
-        month=month,
-        day=day,
-        date_field='publish',
-        slug=slug,
-        queryset=posts,
+        year = year,
+        month = month,
+        month_format = month_format,
+        day = day,
+        date_field = 'publish',
+        slug = slug,
+        queryset = Post.objects.all(),
         **kwargs
     )
 post_detail.__doc__ = date_based.object_detail.__doc__
