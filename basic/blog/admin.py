@@ -11,6 +11,17 @@ class PostAdmin(admin.ModelAdmin):
     list_filter   = ('publish', 'categories', 'status')
     search_fields = ('title', 'body')
     prepopulated_fields = {'slug': ('title',)}
+
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'slug', 'author', 'markup', 'body', 'tease',
+                'status', 'allow_comments', 'publish', 'categories', 'tags', )
+        }),
+        ('Rendered markup', {
+            'classes': ('collapse',),
+            'fields': ('body_markup',),
+        })
+    )
 admin.site.register(Post, PostAdmin)
 
 

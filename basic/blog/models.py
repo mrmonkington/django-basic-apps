@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import permalink
 from django.contrib.auth.models import User
@@ -9,7 +10,8 @@ from basic.blog.managers import PublicManager
 import datetime
 import tagging
 from tagging.fields import TagField
-
+from django_markup.fields import MarkupField
+from django_markup.markup import formatter
 
 class Category(models.Model):
     """Category model."""
@@ -39,8 +41,10 @@ class Post(models.Model):
     title = models.CharField(_('title'), max_length=200)
     slug = models.SlugField(_('slug'), unique_for_date='publish')
     author = models.ForeignKey(User, blank=True, null=True)
+    markup = MarkupField(default='markdown')
     body = models.TextField(_('body'), )
     tease = models.TextField(_('tease'), blank=True, help_text=_('Concise text suggested. Does not appear in RSS feed.'))
+    body_markup = models.TextField(editable=True, blank=True, null=True)
     visits = models.IntegerField(_('visits'), default=0, editable=False)
     status = models.IntegerField(_('status'), choices=STATUS_CHOICES, default=2)
     allow_comments = models.BooleanField(_('allow comments'), default=True)
@@ -60,6 +64,12 @@ class Post(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.title
+
+    def save(self, *args, **kwargs):
+        # Render the markup and save it in the body_markup field.
+        self.body_markup = mark_safe(formatter(self.body, filter_name=self.markup))
+        # Call the real save.
+        super(Post, self).save(*args, **kwargs)
 
     @permalink
     def get_absolute_url(self):
