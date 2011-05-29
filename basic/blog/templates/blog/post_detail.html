@@ -21,12 +21,12 @@
 
 
 {% block content %}
-  {% load blog comments tagging_tags inlines markup %}
+  {% load blog comments tagging_tags markup %}
 
   <p class="date">{{ object.publish|date:"j F Y" }}</p>
 
   <div class="body">
-    {{ object.body_markup|render_inlines|safe }}
+    {{ object.body_markup|safe }}
   </div>
 
   {% tags_for_object object as tag_list %}
