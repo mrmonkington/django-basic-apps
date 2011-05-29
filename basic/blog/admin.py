@@ -8,8 +8,15 @@ class CategoryAdmin(admin.ModelAdmin):
 admin.site.register(Category, CategoryAdmin)
 
 class PostAdmin(admin.ModelAdmin):
+    # If Django WMD is enabled, use the WMD-widgetized form and remove the
+    # markup field.
     if settings.BLOG_WMD:
         form = PostForm
+        display_fields = ('title', 'slug', 'author', 'body', 'tease',
+            'status', 'allow_comments', 'publish', 'categories', 'tags', ) 
+    else:
+        display_fields = ('title', 'slug', 'author', 'markup', 'body', 'tease',
+            'status', 'allow_comments', 'publish', 'categories', 'tags', ) 
 
     list_display  = ('title', 'publish', 'status', 'visits')
     list_filter   = ('publish', 'categories', 'status')
@@ -18,8 +25,7 @@ class PostAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('title', 'slug', 'author', 'markup', 'body', 'tease',
-                'status', 'allow_comments', 'publish', 'categories', 'tags', )
+            'fields': display_fields
         }),
         ('Rendered markup', {
             'classes': ('collapse',),
