@@ -11,3 +11,7 @@ BLOG_NAME = getattr(settings, 'BLOG_NAME', Site.objects.get_current().name)
 
 # A short description of what the blog is about.
 BLOG_DESCRIPTION = getattr(settings, 'BLOG_DESCRIPTION', 'A basic Django blog')
+
+# If set to true, the Markdown WMD editor from Django WMD will be used on the
+# body field of all posts.
+BLOG_WMD = getattr(settings, 'BLOG_WMD', False)

@@ -1,12 +1,16 @@
 from django.contrib import admin
 from basic.blog.models import *
-
+from basic.blog.forms import PostForm
+from basic.blog import settings
 
 class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
 admin.site.register(Category, CategoryAdmin)
 
 class PostAdmin(admin.ModelAdmin):
+    if settings.BLOG_WMD:
+        form = PostForm
+
     list_display  = ('title', 'publish', 'status', 'visits')
     list_filter   = ('publish', 'categories', 'status')
     search_fields = ('title', 'body')
