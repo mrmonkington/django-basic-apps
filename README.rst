@@ -8,6 +8,19 @@ To install any of the apps listed simply create a folder on your ``PYTHONPATH`` 
 
 Below are a list of per app dependancies:
 
+Revisions
+==========
+
+Basic.Blog
+----------
+
+* Converted to `South <http://south.aeracode.org/>`_ for data migrations.
+* Added a visit counter for each post.
+* Added `django-markup <https://github.com/bartTC/django-markup/>`_ for markup language support.
+* Updated feeds for Django 1.2+
+* Added a blog settings file
+* Added support for `Django WMD <https://github.com/pigmonkey/django-wmd/>`_
+
 Dependencies
 ============
 
