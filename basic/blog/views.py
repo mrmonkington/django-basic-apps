@@ -15,49 +15,84 @@ from basic.tools.constants import STOP_WORDS_RE
 from taggit.models import Tag
 
 
-def post_list(request, page=0, paginate_by=blog_settings.BLOG_PAGESIZE, **kwargs):
+def post_list(request, page=0, **kwargs):
     return list_detail.object_list(
         request,
         queryset=Post.objects.published(),
-        paginate_by=paginate_by,
+        paginate_by=blog_settings.BLOG_PAGESIZE,
         page=page,
         **kwargs
     )
 post_list.__doc__ = list_detail.object_list.__doc__
 
 
-def post_archive_year(request, year, **kwargs):
-    return date_based.archive_year(
+def post_archive_year(request, year, page=0, **kwargs):
+    # Date based generic views cannot be paginated. I think pagination is
+    # necessary for viewing yearly archives, so we'll use a list generic view
+    # filtered by year instead.
+    return list_detail.object_list(
         request,
-        year=year,
-        date_field='publish',
-        queryset=Post.objects.published(),
-        make_object_list=True,
-        **kwargs
+        queryset = Post.objects.published().filter(publish__year='2011'),
+        paginate_by=blog_settings.BLOG_PAGESIZE,
+        page=page,
+        extra_context={
+            'type': 'year',
+            'query': year,
+            'query_pretty': year
+        },
+        template_name='blog/post_list.html',
     )
 post_archive_year.__doc__ = date_based.archive_year.__doc__
 
 
 def post_archive_month(request, year, month, **kwargs):
+    # Allow both 3-letter month abbreviations and month as decimal number.
+    month_format = '%b'
+    if len(month) < 3:
+        month_format = '%m'
+
     return date_based.archive_month(
         request,
         year=year,
         month=month,
+        month_format=month_format,
         date_field='publish',
         queryset=Post.objects.published(),
+        extra_context={
+            'type': 'month',
+            'query': year + month,
+            'query_pretty': time.strftime("%B %Y",
+                time.strptime("%s %s" % (month, year), month_format + " %Y")
+            )
+        },
+        template_name='blog/post_list.html',
         **kwargs
     )
 post_archive_month.__doc__ = date_based.archive_month.__doc__
 
 
 def post_archive_day(request, year, month, day, **kwargs):
+    # Allow both 3-letter month abbreviations and month as decimal number.
+    month_format = '%b'
+    if len(month) < 3:
+        month_format = '%m'
+
     return date_based.archive_day(
         request,
         year=year,
         month=month,
+        month_format=month_format,
         day=day,
         date_field='publish',
         queryset=Post.objects.published(),
+        extra_context={
+            'type': 'day',
+            'query': year + month + day,
+            'query_pretty': time.strftime("%B %d %Y",
+                time.strptime("%s %s %s" % (month, day, year), month_format + " %d %Y")
+            )
+        },
+        template_name='blog/post_list.html',
         **kwargs
     )
 post_archive_day.__doc__ = date_based.archive_day.__doc__
@@ -130,12 +165,11 @@ def category_list(request, template_name = 'blog/category_list.html', **kwargs):
         **kwargs
     )
 
-
-def category_detail(request, slug, template_name = 'blog/category_detail.html', **kwargs):
+def category_detail(request, slug, page=0, **kwargs):
     """
     Category detail
 
-    Template: ``blog/category_detail.html``
+    Template: ``blog/post_list.html``
     Context:
         object_list
             List of posts specific to the given category.
@@ -147,17 +181,23 @@ def category_detail(request, slug, template_name = 'blog/category_detail.html', 
     return list_detail.object_list(
         request,
         queryset=category.post_set.published(),
-        extra_context={'category': category},
-        template_name=template_name,
+        paginate_by=blog_settings.BLOG_PAGESIZE,
+        page=page,
+        extra_context={
+            'type': 'category',
+            'query': category.id,
+            'query_pretty': category.title.capitalize()
+        },
+        template_name='blog/post_list.html',
         **kwargs
     )
 
 
-def tag_detail(request, slug, template_name = 'blog/tag_detail.html', **kwargs):
+def tag_detail(request, slug, page=0, **kwargs):
     """
     Tag detail
 
-    Template: ``blog/tag_detail.html``
+    Template: ``blog/post_list.html``
     Context:
         object_list
             List of posts specific to the given tag.
@@ -169,8 +209,14 @@ def tag_detail(request, slug, template_name = 'blog/tag_detail.html', **kwargs):
     return list_detail.object_list(
         request,
         queryset=Post.objects.filter(tags__name__in=[slug]),
-        extra_context={'tag': tag},
-        template_name=template_name,
+        paginate_by=blog_settings.BLOG_PAGESIZE,
+        page=page,
+        extra_context={
+            'type': 'tag',
+            'query': tag.id,
+            'query_pretty': tag
+        },
+        template_name='blog/post_list.html',
         **kwargs
     )
 
