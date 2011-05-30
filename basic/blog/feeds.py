@@ -5,13 +5,14 @@ from django.contrib.syndication.views import Feed
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.comments.models import Comment
 from django.core.urlresolvers import reverse
+from basic.blog import settings
 from basic.blog.models import Post, Category
 
 
 class BlogPostsFeed(Feed):
     _site = Site.objects.get_current()
     title = _site.name
-    description = '%s posts feed.' % _site.name
+    description = settings.BLOG_DESCRIPTION
 
     def link(self):
         return reverse('blog_index')
