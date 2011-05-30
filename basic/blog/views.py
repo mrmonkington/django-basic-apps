@@ -11,7 +11,7 @@ from django.conf import settings
 
 from basic.blog.models import *
 from basic.tools.constants import STOP_WORDS_RE
-from tagging.models import Tag, TaggedItem
+from taggit.models import Tag
 
 
 def post_list(request, page=0, paginate_by=20, **kwargs):
@@ -164,11 +164,11 @@ def tag_detail(request, slug, template_name = 'blog/tag_detail.html', **kwargs):
         tag
             Given tag.
     """
-    tag = get_object_or_404(Tag, name__iexact=slug)
+    tag = get_object_or_404(Tag, slug__iexact=slug)
 
     return list_detail.object_list(
         request,
-        queryset=TaggedItem.objects.get_by_model(Post,tag).filter(status=2),
+        queryset=Post.objects.filter(tags__name__in=[slug]),
         extra_context={'tag': tag},
         template_name=template_name,
         **kwargs

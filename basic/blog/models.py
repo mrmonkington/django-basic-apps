@@ -8,8 +8,7 @@ from django.conf import settings
 from basic.blog.managers import PublicManager
 
 import datetime
-import tagging
-from tagging.fields import TagField
+from taggit.managers import TaggableManager
 from django_markup.fields import MarkupField
 from django_markup.markup import formatter
 
@@ -52,7 +51,7 @@ class Post(models.Model):
     created = models.DateTimeField(_('created'), auto_now_add=True)
     modified = models.DateTimeField(_('modified'), auto_now=True)
     categories = models.ManyToManyField(Category, blank=True)
-    tags = TagField()
+    tags = TaggableManager()
     objects = PublicManager()
 
     class Meta:

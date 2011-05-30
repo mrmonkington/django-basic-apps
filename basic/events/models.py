@@ -4,7 +4,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import permalink
 from django.contrib.auth.models import User
-from tagging.fields import TagField
+from taggit.managers import TaggableManager
 from basic.places.models import Place
 
 
@@ -16,7 +16,7 @@ class Event(models.Model):
     one_off_place = models.CharField(max_length=200, blank=True)
     description = models.TextField(blank=True)
     submitted_by = models.ForeignKey(User, blank=True, null=True)
-    tags = TagField()
+    tags = TaggableManager()
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 

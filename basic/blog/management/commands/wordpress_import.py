@@ -14,7 +14,6 @@ from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
 from django.template.defaultfilters import slugify
 from basic.blog.models import Post, Category
-from tagging.models import Tag
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
@@ -78,25 +77,21 @@ class Command(BaseCommand):
             #   <category domain="post_tag" nicename="a tag">a tag</category>
             #   <category domain="category" nicename="a category">a category</category>
             descriptors = item.findall('category')
-            tags = []
             categories = []
             for descriptor in descriptors:
                 if descriptor.attrib['domain'] == 'post_tag':
-                    tags.append('"%s"' % (descriptor.text))
+                    # Add the tag to the post
+                    post.tags.add(descriptor.text)
                 if descriptor.attrib['domain'] == 'category':
-                    categories.append(descriptor.text)
-
-            # Add the tags to the post.
-            post.tags = ' '.join(tags)
-
-            # Get the category if it exists, otherwise create it.
-            for category in categories:
-                try:
-                    cat = Category.objects.get(slug=slugify(category))
-                except:
-                    cat = Category(title=category, slug=slugify(category))
-                    cat.save()
-                post.categories.add(cat)
+                    category = descriptor.text
+                    # If the category exists, add it to the model. Otherwise,
+                    # create the category, then add it.
+                    try:
+                        cat = Category.objects.get(slug=slugify(category))
+                    except:
+                        cat = Category(title=category, slug=slugify(category))
+                        cat.save()
+                    post.categories.add(cat)
 
             # Save the post again, this time with tags and categories.
             post.save()

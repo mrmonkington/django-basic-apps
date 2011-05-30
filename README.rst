@@ -11,6 +11,11 @@ Below are a list of per app dependancies:
 Revisions
 ==========
 
+All Apps
+--------
+
+* Django Tagging has been replaced in favor of the more actively maintained `django-taggit <https://github.com/alex/django-taggit>`_
+
 Basic.Blog
 ----------
 
@@ -27,7 +32,7 @@ Dependencies
 
 * Basic Inlines are required to use the Blog app
 * Django Comments (http://www.djangoproject.com/documentation/add_ons/#comments) are required for the blog app
-* Django Tagging (http://code.google.com/p/django-tagging)
+* django-taggit (https://github.com/alex/django-taggit)
 * Markdown (http://www.djangoproject.com/documentation/add_ons/#markup)
 * BeautifulSoup (http://www.crummy.com/software/BeautifulSoup/) is required to use the blog and, subsequently, the inlines app.
 * Dateutil (http://labix.org/python-dateutil)
