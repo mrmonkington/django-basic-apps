@@ -88,7 +88,7 @@ def post_archive_day(request, year, month, day, **kwargs):
         extra_context={
             'type': 'day',
             'query': year + month + day,
-            'query_pretty': time.strftime("%B %d %Y",
+            'query_pretty': time.strftime("%B %-d %Y",
                 time.strptime("%s %s %s" % (month, day, year), month_format + " %d %Y")
             )
         },
