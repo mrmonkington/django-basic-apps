@@ -8,7 +8,7 @@ try:
     from wmd.widgets import WMDWidget
 
     class PostForm(forms.ModelForm):
-        body = forms.CharField(widget=WMDWidget)
+        body = forms.CharField(widget=WMDWidget(large=True))
         class Meta:
             model = Post
 except ImportError:
