@@ -9,17 +9,17 @@ from django.views.generic import date_based, list_detail
 from django.db.models import Q, F
 from django.conf import settings
 
+from basic.blog import settings as blog_settings
 from basic.blog.models import *
 from basic.tools.constants import STOP_WORDS_RE
 from taggit.models import Tag
 
 
-def post_list(request, page=0, paginate_by=20, **kwargs):
-    page_size = getattr(settings,'BLOG_PAGESIZE', paginate_by)
+def post_list(request, page=0, paginate_by=blog_settings.BLOG_PAGESIZE, **kwargs):
     return list_detail.object_list(
         request,
         queryset=Post.objects.published(),
-        paginate_by=page_size,
+        paginate_by=paginate_by,
         page=page,
         **kwargs
     )

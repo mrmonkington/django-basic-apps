@@ -18,7 +18,7 @@ class BlogPostsFeed(Feed):
         return reverse('blog_index')
 
     def items(self):
-        return Post.objects.published()[:10]
+        return Post.objects.published()[:settings.BLOG_FEEDSIZE]
 
     def item_pubdate(self, obj):
         return obj.publish
