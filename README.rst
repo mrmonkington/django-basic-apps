@@ -20,6 +20,7 @@ Basic.Blog
 * Updated feeds for Django 1.2+
 * Added a blog settings file
 * Added support for `Django WMD <https://github.com/pigmonkey/django-wmd/>`_
+* Added a Wordpress import script (``./manage.py wordpress_import``)
 
 Dependencies
 ============
