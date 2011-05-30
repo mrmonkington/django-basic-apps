@@ -32,7 +32,7 @@ def post_archive_year(request, year, page=0, **kwargs):
     # filtered by year instead.
     return list_detail.object_list(
         request,
-        queryset = Post.objects.published().filter(publish__year='2011'),
+        queryset = Post.objects.published().filter(publish__year=year),
         paginate_by=blog_settings.BLOG_PAGESIZE,
         page=page,
         extra_context={
