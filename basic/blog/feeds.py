@@ -20,16 +20,23 @@ class BlogPostsFeed(Feed):
     def items(self):
         return Post.objects.published()[:settings.BLOG_FEEDSIZE]
 
+    def item_description(self, item):
+        if settings.BLOG_FEEDEXCERPTS:
+            return item.tease
+        return item.body_markup
+
     def item_pubdate(self, obj):
         return obj.publish
 
 
 class BlogPostsByCategory(Feed):
-    _site = Site.objects.get_current()
-    title = '%s posts category feed' % _site.name
 
     def get_object(self, request, slug):
         return Category.objects.get(slug__exact=slug)
+
+    def title(self, obj):
+        _site = Site.objects.get_current()
+        return '%s: %s' % (_site.name, obj.title)
 
     def link(self, obj):
         if not obj:
@@ -40,7 +47,12 @@ class BlogPostsByCategory(Feed):
         return "Posts recently categorized as %s" % obj.title
 
     def items(self, obj):
-        return obj.post_set.published()[:10]
+        return obj.post_set.published()[:settings.BLOG_FEEDSIZE]
+
+    def item_description(self, item):
+        if settings.BLOG_FEEDEXCERPTS:
+            return item.tease
+        return item.body_markup
 
 class CommentsFeed(Feed):
     _site = Site.objects.get_current()
@@ -52,7 +64,7 @@ class CommentsFeed(Feed):
 
     def items(self):
         ctype = ContentType.objects.get_for_model(Post)
-        return Comment.objects.filter(content_type=ctype)[:10]
+        return Comment.objects.filter(content_type=ctype)[:settings.BLOG_FEEDSIZE]
 
     def item_pubdate(self, obj):
         return obj.submit_date
