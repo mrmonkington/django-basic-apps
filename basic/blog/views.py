@@ -242,8 +242,12 @@ def search(request, template_name='blog/post_search.html'):
         cleaned_search_term = STOP_WORDS_RE.sub('', search_term)
         cleaned_search_term = cleaned_search_term.strip()
         if len(cleaned_search_term) != 0:
-            post_list = Post.objects.published().filter(Q(title__icontains=cleaned_search_term) | Q(body__icontains=cleaned_search_term) | Q(tags__name__icontains=cleaned_search_term) | Q(categories__title__icontains=cleaned_search_term))
-            context = {'object_list': post_list, 'search_term':search_term}
+            post_list = Post.objects.published().filter(Q(title__icontains=cleaned_search_term) | Q(body__icontains=cleaned_search_term) | Q(tags__name__icontains=cleaned_search_term) | Q(categories__title__icontains=cleaned_search_term)).distinct()
+            if len(post_list) > 1:
+                context = {'object_list': post_list, 'search_term':search_term}
+            else:
+                message = 'No results found! Please try a different term.'
+                context = {'message': message} 
         else:
             message = 'Search term was too vague. Please try again.'
             context = {'message':message}
