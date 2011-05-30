@@ -27,6 +27,7 @@ Basic.Blog
 * Added support for `Django WMD <https://github.com/pigmonkey/django-wmd/>`_
 * Added a Wordpress import script (``./manage.py wordpress_import``)
 * Tag cloud!
+* Massive template clean-up.
 
 Dependencies
 ============
