@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-
+from django.views.generic.simple import direct_to_template
 
 urlpatterns = patterns('basic.blog.views',
     url(r'^(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{1,2})/(?P<slug>[-\w]+)/$',
@@ -29,6 +29,11 @@ urlpatterns = patterns('basic.blog.views',
     url(r'^tags/(?P<slug>[-\w]+)/$',
         view='tag_detail',
         name='blog_tag_detail'
+    ),
+    url (r'^tags/$',
+        direct_to_template,
+        {'template': 'blog/tag_list.html'},
+        name='blog_tag_list'
     ),
     url (r'^search/$',
         view='search',

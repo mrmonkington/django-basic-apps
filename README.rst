@@ -26,13 +26,15 @@ Basic.Blog
 * Added a blog settings file
 * Added support for `Django WMD <https://github.com/pigmonkey/django-wmd/>`_
 * Added a Wordpress import script (``./manage.py wordpress_import``)
+* Tag cloud!
 
 Dependencies
 ============
 
 * Basic Inlines are required to use the Blog app
 * Django Comments (http://www.djangoproject.com/documentation/add_ons/#comments) are required for the blog app
-* django-taggit (https://github.com/alex/django-taggit)
+* django-taggit (https://github.com/alex/django-taggit) is used for tagging
+* django-taggit-templatetags (https://github.com/feuervogel/django-taggit-templatetags) is used to generate a tag cloud
 * Markdown (http://www.djangoproject.com/documentation/add_ons/#markup)
 * BeautifulSoup (http://www.crummy.com/software/BeautifulSoup/) is required to use the blog and, subsequently, the inlines app.
 * Dateutil (http://labix.org/python-dateutil)
