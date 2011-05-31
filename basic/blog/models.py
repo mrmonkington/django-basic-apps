@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 
 from basic.blog.managers import PublicManager
+from basic.inlines.parser import inlines
 
 import datetime
 from taggit.managers import TaggableManager
@@ -65,8 +66,11 @@ class Post(models.Model):
         return u'%s' % self.title
 
     def save(self, *args, **kwargs):
+        # Inlines must be rendered before markup in order to properly preserve
+        # whitespace
+        self.body_markup = inlines(self.body)
         # Render the markup and save it in the body_markup field.
-        self.body_markup = mark_safe(formatter(self.body, filter_name=self.markup))
+        self.body_markup = mark_safe(formatter(self.body_markup, filter_name=self.markup))
         # Call the real save.
         super(Post, self).save(*args, **kwargs)
 
