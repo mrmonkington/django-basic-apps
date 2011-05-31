@@ -19,7 +19,6 @@ All Apps
 Basic.Blog
 ----------
 
-* Converted to `South <http://south.aeracode.org/>`_ for data migrations.
 * Added a visit counter for each post.
 * Added `django-markup <https://github.com/bartTC/django-markup/>`_ for markup language support.
 * Updated feeds for Django 1.2+
