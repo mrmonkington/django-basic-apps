@@ -42,11 +42,11 @@ urlpatterns = patterns('basic.blog.views',
     ),
     url(r'^feed/categories/(?P<slug>[^/]+)/$',
         view = BlogPostsByCategory(),
-        name = 'feed_category'
+        name = 'blog_feed_category'
     ),
     url(r'^feed/$',
         view = BlogPostsFeed(),
-        name = 'feed_latest'
+        name = 'blog_feed_latest'
     ),
     url(r'^page/(?P<page>\d+)/$',
         view='post_list',
