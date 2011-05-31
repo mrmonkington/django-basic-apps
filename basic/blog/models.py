@@ -51,7 +51,7 @@ class Post(models.Model):
     created = models.DateTimeField(_('created'), auto_now_add=True)
     modified = models.DateTimeField(_('modified'), auto_now=True)
     categories = models.ManyToManyField(Category, blank=True)
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
     objects = PublicManager()
 
     class Meta:
