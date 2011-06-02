@@ -208,7 +208,7 @@ def tag_detail(request, slug, page=0, **kwargs):
 
     return list_detail.object_list(
         request,
-        queryset=Post.objects.filter(tags__name__in=[slug]),
+        queryset=Post.objects.filter(tags__name__in=[tag]),
         paginate_by=blog_settings.BLOG_PAGESIZE,
         page=page,
         extra_context={
