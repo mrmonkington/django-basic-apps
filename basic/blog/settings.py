@@ -23,6 +23,10 @@ BLOG_FEEDSIZE = getattr(settings, 'BLOG_FEEDSIZE', BLOG_PAGESIZE)
 # This defaults to false, which causes the full post body to be shown.
 BLOG_EXCERPTS = getattr(settings, 'BLOG_EXCERPTS', False)
 
+# The text of the link to continue reading. This is displayed after the excerpt
+# when excerpts are enabled.
+BLOG_CONTINUE = getattr(settings, 'BLOG_CONTINUE', 'Continue reading &raquo;')
+
 # If set to a non-zero integer and post excerpts are enabled, and the post does
 # not have any content in its tease field, then the post will be truncated
 # after the number of characters defined here. If both excerpts and auto

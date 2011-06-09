@@ -37,12 +37,9 @@
             </div>
             <div class="body">
             {% if blog_excerpts %}
-                {% if blog_autoexcerpts and not post.tease %}
-                {{ post.body_markup|safe|truncatewords_html:blog_autoexcerpts }}
-                {% endif %}
-                <p class="tease">{{ post.tease|safe }}</p>
+                {{ post.excerpt|safe }}
             {% else %}
-                    {{ post.body_markup|safe }}
+                {{ post.body_markup|safe }}
             {% endif %}
             </div>
         </div>

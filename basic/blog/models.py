@@ -1,17 +1,19 @@
+import datetime
+
 from django.db import models
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import permalink
 from django.contrib.auth.models import User
-from django.conf import settings
+from django.template.defaultfilters import truncatewords_html
 
-from basic.blog.managers import PublicManager
-from basic.inlines.parser import inlines
-
-import datetime
 from taggit.managers import TaggableManager
 from django_markup.fields import MarkupField
 from django_markup.markup import formatter
+
+from basic.blog.managers import PublicManager
+from basic.blog import settings
+from basic.inlines.parser import inlines
 
 class Category(models.Model):
     """Category model."""
@@ -82,6 +84,34 @@ class Post(models.Model):
             'day': self.publish.day,
             'slug': self.slug
         })
+
+    @property
+    def excerpt(self):
+        """
+        Return the excerpt of a post, respecting the auto excerpt settings,
+        with a link to continue reading if appropriate.
+        """
+        # Create the link to continue reading the full post.
+        continue_link = """
+                   <p class="continue">
+                       <a href="%s" title="Continue reading this post">%s</a>
+                   </p>
+                   """ % (self.get_absolute_url(), settings.BLOG_CONTINUE)
+
+        excerpt = self.tease
+        
+        # If auto excerpts are enabled and the post does not have a tease,
+        # truncate the body and set that to the tease.
+        if settings.BLOG_AUTOEXCERPTS and not self.tease:
+            excerpt = truncatewords_html(self.body_markup,
+                                       settings.BLOG_AUTOEXCERPTS)
+            # If the auto excerpt is the same as the full body, set the
+            # continue link to an empty string so that it is not displayed.
+            if excerpt == self.body_markup:
+                continue_link = ""
+
+        # Return the tease followed by the continue link
+        return "%s %s" % (excerpt, mark_safe(continue_link))
 
     def get_previous_post(self):
         return self.get_previous_by_publish(status__gte=2)

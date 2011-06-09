@@ -9,4 +9,5 @@ def blog_settings(request):
         'blog_description': settings.BLOG_DESCRIPTION,
         'blog_excerpts': settings.BLOG_EXCERPTS,
         'blog_autoexcerpts': settings.BLOG_AUTOEXCERPTS,
+        'blog_continue': settings.BLOG_CONTINUE,
     }
