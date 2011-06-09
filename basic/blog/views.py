@@ -7,7 +7,6 @@ from django.template import RequestContext
 from django.http import Http404
 from django.views.generic import date_based, list_detail
 from django.db.models import Q, F
-from django.conf import settings
 
 from basic.blog import settings as blog_settings
 from basic.blog.models import *
@@ -131,7 +130,7 @@ def post_detail(request, slug, year, month, day, **kwargs):
 
     # If the user's IP is not specified as internal, increase the post's view
     # count.
-    if not request.META.get('REMOTE_ADDR') in settings.INTERNAL_IPS:
+    if not request.META.get('REMOTE_ADDR') in blog_settings.BLOG_INTERNALIPS:
         post.visits = F('visits') + 1
         post.save()
 

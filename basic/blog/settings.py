@@ -43,3 +43,10 @@ BLOG_FEEDEXCERPTS = getattr(settings, 'BLOG_FEEDEXCERPTS', BLOG_EXCERPTS)
 # If set to true, the Markdown WMD editor from Django WMD will be used on the
 # body field of all posts.
 BLOG_WMD = getattr(settings, 'BLOG_WMD', False)
+
+# A tuple of IP addresses. If the request's remote address is set to one of
+# the IP addresses in this tuple, the visit counter will not be increased when
+# a post is visted.
+# This defaults to settings.INTERNAL_IPS, and you most likely don't want to
+# change it.
+BLOG_INTERNALIPS = getattr(settings, 'BLOG_INTERNALIPS', settings.INTERNAL_IPS)
