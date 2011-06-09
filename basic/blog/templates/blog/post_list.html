@@ -20,7 +20,7 @@
             <div class="meta">
                 <div class="date">{{ post.publish|date }}</div>
 
-                {% if post.tags %}
+                {% if post.tags.all %}
                 <div class="tags">
                     <span class="label">{% trans "Tags" %}:</span>
                     <ul>

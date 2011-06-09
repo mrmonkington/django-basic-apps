@@ -12,7 +12,7 @@
         <div class="meta">
             <div class="date">{{ object.publish|date }}</div>
 
-            {% if object.tags %}
+            {% if object.tags.all %}
             <div class="tags">
                 <span class="label">{% trans "Tags" %}:</span>
                 <ul>
