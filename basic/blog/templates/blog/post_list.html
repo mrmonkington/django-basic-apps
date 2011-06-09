@@ -36,11 +36,14 @@
                 {% endif %}
             </div>
             <div class="body">
-                {% if blog_excerpts %}
-                    <p class="tease">{{ post.tease|safe }}</p>
-                {% else %}
-                    {{ post.body_markup|safe }}
+            {% if blog_excerpts %}
+                {% if blog_autoexcerpts and not post.tease %}
+                {{ post.body_markup|safe|truncatewords_html:blog_autoexcerpts }}
                 {% endif %}
+                <p class="tease">{{ post.tease|safe }}</p>
+            {% else %}
+                    {{ post.body_markup|safe }}
+            {% endif %}
             </div>
         </div>
     {% endfor %}

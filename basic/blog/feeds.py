@@ -5,6 +5,7 @@ from django.contrib.syndication.views import Feed
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.comments.models import Comment
 from django.core.urlresolvers import reverse
+from django.template.defaultfilters import truncatewords_html
 from basic.blog import settings
 from basic.blog.models import Post, Category
 
@@ -22,6 +23,9 @@ class BlogPostsFeed(Feed):
 
     def item_description(self, item):
         if settings.BLOG_FEEDEXCERPTS:
+            if settings.BLOG_AUTOEXCERPTS and not item.tease:
+                return truncatewords_html(item.body_markup,
+                                          settings.BLOG_AUTOEXCERPTS)
             return item.tease
         return item.body_markup
 

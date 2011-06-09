@@ -23,8 +23,17 @@ BLOG_FEEDSIZE = getattr(settings, 'BLOG_FEEDSIZE', BLOG_PAGESIZE)
 # This defaults to false, which causes the full post body to be shown.
 BLOG_EXCERPTS = getattr(settings, 'BLOG_EXCERPTS', False)
 
-# If set to true, only post excerpts will be shown in feeds.
-# This defaults to the same value as BLOG_EXCERPTS above.
+# If set to a non-zero integer and post excerpts are enabled, and the post does
+# not have any content in its tease field, then the post will be truncated
+# after the number of characters defined here. If both excerpts and auto
+# excerpts are enabled but the post does have a tease value, that tease will be
+# displayed and this setting will not come into effect.
+# Defaults to 100 characters.
+BLOG_AUTOEXCERPTS = getattr(settings, 'BLOG_AUTOEXCERPTS', 100)
+
+# If set to true, only post excerpts will be shown in feeds. This respects the
+# BLOG_AUTOEXCERPTS value above.
+# This defaults to the same value as BLOG_EXCERPTS.
 BLOG_FEEDEXCERPTS = getattr(settings, 'BLOG_FEEDEXCERPTS', BLOG_EXCERPTS)
 
 # If set to true, the Markdown WMD editor from Django WMD will be used on the

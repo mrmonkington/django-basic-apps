@@ -7,5 +7,6 @@ def blog_settings(request):
     return {
         'blog_name': settings.BLOG_NAME,
         'blog_description': settings.BLOG_DESCRIPTION,
-        'blog_excerpts': settings.BLOG_EXCERPTS
+        'blog_excerpts': settings.BLOG_EXCERPTS,
+        'blog_autoexcerpts': settings.BLOG_AUTOEXCERPTS,
     }

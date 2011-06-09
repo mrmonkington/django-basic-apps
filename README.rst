@@ -27,6 +27,7 @@ Basic.Blog
 * Added a Wordpress import script (``./manage.py wordpress_import``)
 * Tag cloud!
 * Massive template clean-up.
+* Added an auto-excerpt feature.
 
 Dependencies
 ============
