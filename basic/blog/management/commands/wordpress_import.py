@@ -8,18 +8,31 @@ and select "Posts" rather than "All content".
 Props to:
     http://blog.sejo.be/2010/02/14/import-wordpress-django-mingus/
 """
+from optparse import make_option
+from datetime import datetime
+import xml.etree.ElementTree as ET
+
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.sites.models import Site
 from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
 from django.template.defaultfilters import slugify
+
 from basic.blog.models import Post, Category
-import xml.etree.ElementTree as ET
-from datetime import datetime
 
 class Command(BaseCommand):
     help = 'Imports Wordpress posts from an XML file into Django basic blog'
     args = 'filename.xml'
+
+    option_list = BaseCommand.option_list + (
+        make_option('--excerpt',
+                    action='store_true',
+                    dest='excerpt',
+                    default=False,
+                    help="""Automagically search the post body for the
+                         <!--more--> quicktag and place anything preceeding the
+                         tag into the post's tease field."""),
+    )
 
     def handle(self, *args, **options):
         try:
@@ -53,7 +66,7 @@ class Command(BaseCommand):
             except:
                 post = Post()
                 post.title = item.find('title').text
-                post.slug = item.find('{%s}post_name' % (wp)).text
+                post.slug = slug
                 post.body = item.find('{http://purl.org/rss/1.0/modules/content/}encoded').text
                 post.created = item.find('{%s}post_date' % (wp)).text
 
@@ -70,8 +83,23 @@ class Command(BaseCommand):
                 # Set publish time to the creation time.
                 post.publish = post.created
                 
-                # Post must be saved before we apply tags or comments.
+                # Post must be saved before we apply tags or comments, and
+                # before the body_markup field (required below) is created.
                 post.save()
+
+                # If the excerpt flag was set, do some auto excerpting magic.
+                if options['excerpt']:
+                    # Partition the string at the Wordpress more quicktag.
+                    partition = post.body_markup.partition('<!--more-->')
+
+                    # If the `more` tag was not found, Python will have returned
+                    # a tuple with the full post body in the first item followed by
+                    # two empty items. To make sure that the excerpt is only set if
+                    # the post does actually contain a `more` quicktag, we'll check
+                    # to see if the third tuple item is an empty string.
+                    if partition[2]:
+                        post.tease = partition[0]
+                        post.save()
 
             # Get all tags and categories. They look like this, respectively:
             #   <category domain="post_tag" nicename="a tag">a tag</category>
