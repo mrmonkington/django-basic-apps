@@ -142,4 +142,11 @@ class Command(BaseCommand):
                 c.content_type = ContentType.objects.get(app_label='blog', model='post')
                 c.object_pk = post.id
                 c.site_id = Site.objects.get_current().id
+
+                # Only attempt to assign a user URL to the new comment if the
+                # old comment has one.
+                user_url = comment.find('{%s}comment_author_url' % (wp)).text
+                if user_url:
+                    c.user_url = user_url
+
                 c.save()
