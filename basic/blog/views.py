@@ -1,17 +1,17 @@
 import datetime
-import re
 import time
 
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import Http404
 from django.views.generic import date_based, list_detail
-from django.db.models import Q, F
+from django.db.models import F
+
+from taggit.models import Tag
 
 from basic.blog import settings as blog_settings
 from basic.blog.models import *
-from basic.tools.constants import STOP_WORDS_RE
-from taggit.models import Tag
+from basic.search.functions import *
 
 
 def post_list(request, page=0, **kwargs):
@@ -220,13 +220,13 @@ def tag_detail(request, slug, page=0, **kwargs):
     )
 
 
-def search(request, template_name='blog/post_search.html'):
+def search(request, template_name='blog/post_search.html',
+           search_fields=['title', 'body', 'tags__name', 'categories__title']):
     """
     Search for blog posts.
 
-    This template will allow you to setup a simple search form that will try to return results based on
-    given search strings. The queries will be put through a stop words filter to remove words like
-    'the', 'a', or 'have' to help imporve the result set.
+    This template will allow you to setup a simple search form that will return
+    results based on given search keywords.
 
     Template: ``blog/post_search.html``
     Context:
@@ -234,20 +234,27 @@ def search(request, template_name='blog/post_search.html'):
             List of blog posts that match given search term(s).
         search_term
             Given search term.
+        message
+            A message returned by the search.
     """
     context = {}
-    if request.GET:
-        search_term = '%s' % request.GET['q']
-        cleaned_search_term = STOP_WORDS_RE.sub('', search_term)
-        cleaned_search_term = cleaned_search_term.strip()
-        if len(cleaned_search_term) != 0:
-            post_list = Post.objects.published().filter(Q(title__icontains=cleaned_search_term) | Q(body__icontains=cleaned_search_term) | Q(tags__name__icontains=cleaned_search_term) | Q(categories__title__icontains=cleaned_search_term)).distinct()
-            if len(post_list) > 1:
-                context = {'object_list': post_list, 'search_term':search_term}
+    message = ''
+    query_string = ''
+
+    if 'q' in request.GET:
+        query_string = request.GET['q']
+        entry_query = get_query(query_string, search_fields)
+
+        try:
+            results = Post.objects.published().filter(entry_query).distinct()
+            if results:
+                context = {'object_list': results, 'search_term': query_string}
             else:
-                message = 'No results found! Please try a different term.'
-                context = {'message': message} 
-        else:
-            message = 'Search term was too vague. Please try again.'
-            context = {'message':message}
-    return render_to_response(template_name, context, context_instance=RequestContext(request))
+                message = 'No results found! Please try a different search term.'
+        except TypeError:
+            message = 'Search term was too vague, please try again.'
+
+        context['message'] = message
+
+    return render_to_response(template_name, context,
+                              context_instance=RequestContext(request))

@@ -25,7 +25,6 @@
         <li>
             <h3 class="title"><a href="{{ post.get_absolute_url }}" title="{% trans "View this post" %}">{{ post.title }}</a></h3>
             <p class="date">{{ post.publish|date }}</p>
-            <p class="tease">{{ post.tease|safe }}</p>
         </li>
         {% endfor %}
     </ul>
