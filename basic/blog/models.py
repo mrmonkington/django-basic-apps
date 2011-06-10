@@ -110,8 +110,12 @@ class Post(models.Model):
             if excerpt == self.body_markup:
                 continue_link = ""
 
-        # Return the tease followed by the continue link
-        return "%s %s" % (excerpt, mark_safe(continue_link))
+        # If there is an excerpt, return it followed by the continue link.
+        if excerpt:
+            return "%s %s" % (excerpt, mark_safe(continue_link))
+
+        # If we're still here, there is no excerpt.
+        return False
 
     def get_previous_post(self):
         return self.get_previous_by_publish(status__gte=2)

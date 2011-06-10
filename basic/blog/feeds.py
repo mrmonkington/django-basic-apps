@@ -21,7 +21,7 @@ class BlogPostsFeed(Feed):
         return Post.objects.published()[:settings.BLOG_FEEDSIZE]
 
     def item_description(self, item):
-        if settings.BLOG_FEEDEXCERPTS:
+        if settings.BLOG_FEEDEXCERPTS and item.excerpt:
             return item.excerpt
         return item.body_markup
 
@@ -50,7 +50,7 @@ class BlogPostsByCategory(Feed):
         return obj.post_set.published()[:settings.BLOG_FEEDSIZE]
 
     def item_description(self, item):
-        if settings.BLOG_FEEDEXCERPTS:
+        if settings.BLOG_FEEDEXCERPTS and item.excerpt:
             return item.excerpt
         return item.body_markup
 
