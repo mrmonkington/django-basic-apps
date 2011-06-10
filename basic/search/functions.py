@@ -16,10 +16,17 @@ def normalize_query(query_string):
     find_terms = re.compile(r'"([^"]+)"|(\S+)').findall
     normalize_space = re.compile(r'\s{2,}').sub 
 
-    # Remove stop words from the query
-    cleaned_query = STOP_WORDS_RE.sub('', query_string)
+    # Split the string into terms.
+    terms = find_terms(query_string)
 
-    return [normalize_space(' ', (t[0] or t[1]).strip()) for t in find_terms(cleaned_query)] 
+    # Only send unquoted terms through the stop words filter.
+    for index, term in enumerate(terms):
+        if term[1] is not '':
+            # If the term is a stop word, delete it from the list.
+            if STOP_WORDS_RE.sub('', term[1]) is '':
+                del terms[index]
+
+    return [normalize_space(' ', (t[0] or t[1]).strip()) for t in terms] 
 
 
 def get_query(query_string, search_fields):
