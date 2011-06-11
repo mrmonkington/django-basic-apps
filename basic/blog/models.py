@@ -41,7 +41,7 @@ class Post(models.Model):
         (2, _('Public')),
     )
     title = models.CharField(_('title'), max_length=200)
-    slug = models.SlugField(_('slug'), unique_for_date='publish')
+    slug = models.SlugField(_('slug'), unique_for_date='publish', max_length=100)
     author = models.ForeignKey(User, blank=True, null=True)
     markup = MarkupField(default='markdown')
     body = models.TextField(_('body'), )
