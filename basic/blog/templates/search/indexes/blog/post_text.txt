@@ -1,4 +1,0 @@
-{{ object.title }}
-{{ object.body_markup }}
-{{ object.categories }}
-{{ object.tags }}
