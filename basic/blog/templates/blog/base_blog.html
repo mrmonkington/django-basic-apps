@@ -1,5 +1,5 @@
 {% extends "base.html" %}
 {% block extrahead %}
-<link rel="alternate" type="application/rss+xml" title="{{ blog_name }} Feed" href="{% url blog_feed_latest %}" />
+<link rel="alternate" type="application/rss+xml" title="{{ BLOG_NAME }} Feed" href="{% url blog_feed_latest %}" />
 {% endblock %}
 {% block body_class %}blog{% endblock %}

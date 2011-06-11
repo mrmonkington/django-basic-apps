@@ -36,7 +36,7 @@
                 {% endif %}
             </div>
             <div class="body">
-            {% if blog_excerpts and post.excerpt %}
+            {% if BLOG_EXCERPTS and post.excerpt %}
                 {{ post.excerpt|safe }}
             {% else %}
                 {{ post.body_rendered|safe }}

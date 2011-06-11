@@ -5,10 +5,8 @@ def blog_settings(request):
     Add blog settings to the context, making them available to templates.
     """
     return {
-        'blog_name': settings.BLOG_NAME,
-        'blog_description': settings.BLOG_DESCRIPTION,
-        'blog_excerpts': settings.BLOG_EXCERPTS,
-        'blog_autoexcerpts': settings.BLOG_AUTOEXCERPTS,
-        'blog_continue': settings.BLOG_CONTINUE,
-        'blog_usedisqus': settings.BLOG_USEDISQUS,
+        'BLOG_NAME': settings.BLOG_NAME,
+        'BLOG_DESCRIPTION': settings.BLOG_DESCRIPTION,
+        'BLOG_EXCERPTS': settings.BLOG_EXCERPTS,
+        'BLOG_USEDISQUS': settings.BLOG_USEDISQUS,
     }

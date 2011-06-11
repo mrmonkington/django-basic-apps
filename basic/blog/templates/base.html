@@ -4,15 +4,15 @@
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>{% block title %}{{ blog_name }}{% endblock %}</title>
+    <title>{% block title %}{{ BLOG_NAME }}{% endblock %}</title>
     {% block extrahead %}{% endblock %}
 </head>
 <body id="{% block body_id %}{% endblock %}" class="{% block body_class %}{% endblock %}">
 <div id="body">
 {% block body %}
     <div id="masthead">
-        <a id="site-title" href="/" title="{{ blog_name }}">{{ blog_name }}</a>
-        <div id="site-description">{{ blog_description }}</div>
+        <a id="site-title" href="/" title="{{ BLOG_NAME }}">{{ BLOG_NAME }}</a>
+        <div id="site-description">{{ BLOG_DESCRIPTION }}</div>
     </div>
 
     <div id="content">
