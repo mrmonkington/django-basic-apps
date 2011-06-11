@@ -50,3 +50,7 @@ BLOG_WMD = getattr(settings, 'BLOG_WMD', False)
 # This defaults to settings.INTERNAL_IPS, and you most likely don't want to
 # change it.
 BLOG_INTERNALIPS = getattr(settings, 'BLOG_INTERNALIPS', settings.INTERNAL_IPS)
+
+# If set to true, Disqus will be used for comments. The django-disqus package
+# should be installed before enabling this option. Defaults to false.
+BLOG_USEDISQUS = getattr(settings, 'BLOG_USEDISQUS', False)

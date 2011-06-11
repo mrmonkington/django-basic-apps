@@ -10,4 +10,5 @@ def blog_settings(request):
         'blog_excerpts': settings.BLOG_EXCERPTS,
         'blog_autoexcerpts': settings.BLOG_AUTOEXCERPTS,
         'blog_continue': settings.BLOG_CONTINUE,
+        'blog_usedisqus': settings.BLOG_USEDISQUS,
     }
