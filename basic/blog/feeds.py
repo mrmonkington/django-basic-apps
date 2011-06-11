@@ -23,7 +23,7 @@ class BlogPostsFeed(Feed):
     def item_description(self, item):
         if settings.BLOG_FEEDEXCERPTS and item.excerpt:
             return item.excerpt
-        return item.body_markup
+        return item.body_rendered
 
     def item_pubdate(self, obj):
         return obj.publish
@@ -52,7 +52,7 @@ class BlogPostsByCategory(Feed):
     def item_description(self, item):
         if settings.BLOG_FEEDEXCERPTS and item.excerpt:
             return item.excerpt
-        return item.body_markup
+        return item.body_rendered
 
 class CommentsFeed(Feed):
     _site = Site.objects.get_current()

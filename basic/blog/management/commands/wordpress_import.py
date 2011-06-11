@@ -84,13 +84,13 @@ class Command(BaseCommand):
                 post.publish = post.created
                 
                 # Post must be saved before we apply tags or comments, and
-                # before the body_markup field (required below) is created.
+                # before the body_rendered field (required below) is created.
                 post.save()
 
                 # If the excerpt flag was set, do some auto excerpting magic.
                 if options['excerpt']:
                     # Partition the string at the Wordpress more quicktag.
-                    partition = post.body_markup.partition('<!--more-->')
+                    partition = post.body_rendered.partition('<!--more-->')
 
                     # If the `more` tag was not found, Python will have returned
                     # a tuple with the full post body in the first item followed by

@@ -46,7 +46,7 @@ class Post(models.Model):
     markup = MarkupField(default='markdown')
     body = models.TextField(_('body'), )
     tease = models.TextField(_('tease'), blank=True, help_text=_('Concise text suggested. Does not appear in RSS feed.'))
-    body_markup = models.TextField(editable=True, blank=True, null=True)
+    body_rendered = models.TextField(editable=True, blank=True, null=True)
     visits = models.IntegerField(_('visits'), default=0, editable=False)
     status = models.IntegerField(_('status'), choices=STATUS_CHOICES, default=2)
     allow_comments = models.BooleanField(_('allow comments'), default=True)
@@ -70,9 +70,9 @@ class Post(models.Model):
     def save(self, *args, **kwargs):
         # Inlines must be rendered before markup in order to properly preserve
         # whitespace
-        self.body_markup = inlines(self.body)
-        # Render the markup and save it in the body_markup field.
-        self.body_markup = mark_safe(formatter(self.body_markup, filter_name=self.markup))
+        self.body_rendered = inlines(self.body)
+        # Render the markup and save it in the body_rendered field.
+        self.body_rendered = mark_safe(formatter(self.body_rendered, filter_name=self.markup))
         # Call the real save.
         super(Post, self).save(*args, **kwargs)
 
@@ -103,11 +103,11 @@ class Post(models.Model):
         # If auto excerpts are enabled and the post does not have a tease,
         # truncate the body and set that to the tease.
         if settings.BLOG_AUTOEXCERPTS and not self.tease:
-            excerpt = truncatewords_html(self.body_markup,
+            excerpt = truncatewords_html(self.body_rendered,
                                        settings.BLOG_AUTOEXCERPTS)
             # If the auto excerpt is the same as the full body, set the
             # continue link to an empty string so that it is not displayed.
-            if excerpt == self.body_markup:
+            if excerpt == self.body_rendered:
                 continue_link = ""
 
         # If there is an excerpt, return it followed by the continue link.

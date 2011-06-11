@@ -39,7 +39,7 @@
             {% if blog_excerpts and post.excerpt %}
                 {{ post.excerpt|safe }}
             {% else %}
-                {{ post.body_markup|safe }}
+                {{ post.body_rendered|safe }}
             {% endif %}
             </div>
         </div>
