@@ -28,6 +28,7 @@ Basic.Blog
 * Tag cloud!
 * Massive template clean-up.
 * Added an auto-excerpt feature.
+* `Disqus <http://disqus.com/>`_ support.
 
 Basic.Search
 -----------
@@ -45,6 +46,7 @@ Dependencies
 * BeautifulSoup (http://www.crummy.com/software/BeautifulSoup/) is required to use the blog and, subsequently, the inlines app.
 * Dateutil (http://labix.org/python-dateutil)
 * Django Registration for the invitations app
+* django-disqus (http://github.com/arthurk/django-disqus) is required if Disqus-powered comments are enabled.
 
 Inlines
 =======
