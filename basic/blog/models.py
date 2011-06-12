@@ -45,7 +45,7 @@ class Post(models.Model):
     author = models.ForeignKey(User, blank=True, null=True)
     markup = MarkupField(default='markdown')
     body = models.TextField(_('body'), )
-    tease = models.TextField(_('tease'), blank=True, help_text=_('Concise text suggested. Does not appear in RSS feed.'))
+    tease = models.TextField(_('tease'), blank=True)
     body_rendered = models.TextField(editable=True, blank=True, null=True)
     visits = models.IntegerField(_('visits'), default=0, editable=False)
     status = models.IntegerField(_('status'), choices=STATUS_CHOICES, default=2)
