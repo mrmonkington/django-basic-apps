@@ -1,11 +1,12 @@
+{% load i18n %} 
 <div id="comments">
+    <h2 class="comments_title">{% trans "Comments" %}</h2>
 {% if BLOG_USEDISQUS %}
     {% include 'blog/comments_disqus.html' %}
 {% else %}
-    {% load i18n comments %} 
+    {% load comments %} 
     {% get_comment_list for object as comment_list %}
     {% if comment_list %}
-        <h2 class="comments_title">{% trans "Comments" %}</h2>
         {% for comment in comment_list %}
         {% if comment.is_public %}
         <div class="comment" id="c{{ comment.id }}">
