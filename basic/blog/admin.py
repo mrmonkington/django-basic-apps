@@ -29,7 +29,7 @@ class PostAdmin(admin.ModelAdmin):
         }),
         ('Rendered markup', {
             'classes': ('collapse',),
-            'fields': ('body_rendered',),
+            'fields': ('body_rendered', 'tease_rendered'),
         })
     )
 admin.site.register(Post, PostAdmin)

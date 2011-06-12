@@ -45,8 +45,9 @@ class Post(models.Model):
     author = models.ForeignKey(User, blank=True, null=True)
     markup = MarkupField(default='markdown')
     body = models.TextField(_('body'), )
-    tease = models.TextField(_('tease'), blank=True)
     body_rendered = models.TextField(editable=True, blank=True, null=True)
+    tease = models.TextField(_('tease'), blank=True)
+    tease_rendered = models.TextField(editable=True, blank=True, null=True)
     visits = models.IntegerField(_('visits'), default=0, editable=False)
     status = models.IntegerField(_('status'), choices=STATUS_CHOICES, default=2)
     allow_comments = models.BooleanField(_('allow comments'), default=True)
@@ -71,8 +72,10 @@ class Post(models.Model):
         # Inlines must be rendered before markup in order to properly preserve
         # whitespace
         self.body_rendered = inlines(self.body)
+        self.tease_rendered = inlines(self.tease)
         # Render the markup and save it in the body_rendered field.
         self.body_rendered = mark_safe(formatter(self.body_rendered, filter_name=self.markup))
+        self.tease_rendered = mark_safe(formatter(self.tease_rendered, filter_name=self.markup))
         # Call the real save.
         super(Post, self).save(*args, **kwargs)
 
@@ -98,7 +101,7 @@ class Post(models.Model):
                    </p>
                    """ % (self.get_absolute_url(), settings.BLOG_CONTINUE)
 
-        excerpt = self.tease
+        excerpt = self.tease_rendered
         
         # If auto excerpts are enabled and the post does not have a tease,
         # truncate the body and set that to the tease.

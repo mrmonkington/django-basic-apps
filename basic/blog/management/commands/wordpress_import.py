@@ -82,15 +82,11 @@ class Command(BaseCommand):
 
                 # Set publish time to the creation time.
                 post.publish = post.created
-                
-                # Post must be saved before we apply tags or comments, and
-                # before the body_rendered field (required below) is created.
-                post.save()
 
                 # If the excerpt flag was set, do some auto excerpting magic.
                 if options['excerpt']:
                     # Partition the string at the Wordpress more quicktag.
-                    partition = post.body_rendered.partition('<!--more-->')
+                    partition = post.body.partition('<!--more-->')
 
                     # If the `more` tag was not found, Python will have returned
                     # a tuple with the full post body in the first item followed by
@@ -99,7 +95,9 @@ class Command(BaseCommand):
                     # to see if the third tuple item is an empty string.
                     if partition[2]:
                         post.tease = partition[0]
-                        post.save()
+                
+                # Post must be saved before we apply tags or comments.
+                post.save()
 
             # Get all tags and categories. They look like this, respectively:
             #   <category domain="post_tag" nicename="a tag">a tag</category>
