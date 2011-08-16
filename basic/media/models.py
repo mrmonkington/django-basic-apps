@@ -31,7 +31,7 @@ class Audio(models.Model):
     still = models.FileField(upload_to='audio_stills', blank=True, help_text='An image that will be used as a thumbnail.')
     audio = models.FilePathField(path=settings.MEDIA_ROOT+'audios/', recursive=True)
     description = models.TextField(blank=True)
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
     uploaded = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
@@ -84,7 +84,7 @@ class Photo(models.Model):
     taken_by = models.CharField(max_length=100, blank=True)
     license = models.URLField(blank=True, choices=LICENSES)
     description = models.TextField(blank=True)
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
     uploaded = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     _exif = models.TextField(blank=True) 
@@ -142,7 +142,7 @@ class Video(models.Model):
     still = models.FileField(upload_to='video_stills', blank=True, help_text='An image that will be used as a thumbnail.')
     video = models.FilePathField(path=settings.MEDIA_ROOT+'videos/', recursive=True)
     description = models.TextField(blank=True)
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
     uploaded = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
