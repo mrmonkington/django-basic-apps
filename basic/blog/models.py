@@ -76,6 +76,10 @@ class Post(models.Model):
         # Render the markup and save it in the body_rendered field.
         self.body_rendered = mark_safe(formatter(self.body_rendered, filter_name=self.markup))
         self.tease_rendered = mark_safe(formatter(self.tease_rendered, filter_name=self.markup))
+        # Run the body and tease through Smartypants, if enabled.
+        if BLOG_SMARTYPANTS:
+            self.body_rendered = mark_safe(formatter(self.body_rendered, filter_name='smartypants')
+            self.tease_rendered = mark_safe(formatter(self.tease_rendered, filter_name='smartypants')
         # Call the real save.
         super(Post, self).save(*args, **kwargs)
 

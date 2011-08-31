@@ -54,3 +54,14 @@ BLOG_INTERNALIPS = getattr(settings, 'BLOG_INTERNALIPS', settings.INTERNAL_IPS)
 # If set to true, Disqus will be used for comments. The django-disqus package
 # should be installed before enabling this option. Defaults to false.
 BLOG_USEDISQUS = getattr(settings, 'BLOG_USEDISQUS', False)
+
+# If set to true, posts will be put through John Gruber's SmartyPants filter
+# for fancy quotes and dashes.
+# By default, if the smartypants python package is installed, the filter will
+# be enabled. Otherwise, the filter will be disabled by default.
+try:
+    import smartypants
+    smartyimport = True
+except ImportError:
+    smartyimport = False
+BLOG_SMARTYPANTS = getattr(settings, 'BLOG_SMARTYPANTS', smartyimport)
