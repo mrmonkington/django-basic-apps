@@ -1,8 +1,11 @@
+from datetime import datetime
+
 from django.db import models
 from django.db.models import permalink
 from django.conf import settings
-from taggit.managers import TaggableManager
 
+from taggit.managers import TaggableManager
+from basic.media.exif import show_exif
 
 class AudioSet(models.Model):
     """AudioSet model"""
@@ -87,21 +90,11 @@ class Photo(models.Model):
     tags = TaggableManager(blank=True)
     uploaded = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    _exif = models.TextField(blank=True) 
+    original = models.DateTimeField(editable=False, blank=True, null=True,
+                                    verbose_name='Original Creation Date')
 
     class Meta:
         db_table = 'media_photos'
-
-    def _set_exif(self, d):
-        self._exif = simplejson.dumps(d)
-
-    def _get_exif(self):
-        if self._exif:
-            return simplejson.loads(self._exif)
-        else:
-            return {}
-
-    exif = property(_get_exif, _set_exif, "Photo EXIF data, as a dict.")
 
     def __unicode__(self):
         return '%s' % self.title
@@ -110,9 +103,28 @@ class Photo(models.Model):
     def url(self):
         return '%s%s' % (settings.MEDIA_URL, self.photo)
 
+    @property
+    def exif(self):
+        return show_exif(self.photo.path)
+
     @permalink
     def get_absolute_url(self):
         return ('photo_detail', None, { 'slug': self.slug })
+
+    def save(self):
+        # The model's real save must be called first, so that the file is
+        # uploaded and exif data can be accessed.
+        super(Photo, self).save()
+        # If the original date is not set, set it based on exif data. If it can
+        # not be found, set it to the current time.
+        if self.original is None:
+            if 'DateTimeOriginal' in self.exif:
+                self.original = datetime.strptime(self.exif['DateTimeOriginal'], '%Y:%m:%d %H:%M:%S')
+            else:
+                self.original = datetime.now()
+            # The real save must be called *again*, so that the original date
+            # value can be saved.
+            super(Photo, self).save()
 
 
 class VideoSet(models.Model):

@@ -30,6 +30,12 @@ Basic.Blog
 * Added an auto-excerpt feature.
 * `Disqus <http://disqus.com/>`_ support.
 
+Basic.Media
+-----------
+
+* Added a property to access exif data.
+* Added an original creation date to all photos, based on exif.
+
 Basic.Search
 -----------
 
