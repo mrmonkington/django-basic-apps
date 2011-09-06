@@ -119,7 +119,7 @@ class Photo(models.Model):
         # not be found, set it to the current time.
         if self.original is None:
             if 'DateTimeOriginal' in self.exif:
-                self.original = datetime.strptime(self.exif['DateTimeOriginal'], '%Y:%m:%d %H:%M:%S')
+                self.original = datetime.strptime(self.exif['DateTimeOriginal'][:19], '%Y:%m:%d %H:%M:%S')
             else:
                 self.original = datetime.now()
             # The real save must be called *again*, so that the original date
