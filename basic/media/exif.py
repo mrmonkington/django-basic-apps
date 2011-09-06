@@ -11,10 +11,9 @@ def show_exif(file):
     try:
         image = Image.open(file)
         raw = image._getexif()
-    except:
-        pass
-    else:
         for tag, value in raw.items():
             decoded = TAGS.get(tag, tag)
             exif[decoded] = value
+    except:
+        pass
     return exif
