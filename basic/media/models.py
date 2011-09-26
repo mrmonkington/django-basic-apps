@@ -1,15 +1,16 @@
+from datetime import datetime
+
 from django.db import models
 from django.db.models import permalink
 from django.conf import settings
-from tagging.fields import TagField
 
-import tagging
-
+from taggit.managers import TaggableManager
+from basic.media.exif import show_exif
 
 class AudioSet(models.Model):
     """AudioSet model"""
     title = models.CharField(max_length=255)
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True)
     description = models.TextField(blank=True)
     audios = models.ManyToManyField('Audio', related_name='audio_sets')
     created = models.DateTimeField(auto_now_add=True)
@@ -29,11 +30,11 @@ class AudioSet(models.Model):
 class Audio(models.Model):
     """Audio model"""
     title = models.CharField(max_length=255)
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True)
     still = models.FileField(upload_to='audio_stills', blank=True, help_text='An image that will be used as a thumbnail.')
     audio = models.FilePathField(path=settings.MEDIA_ROOT+'audios/', recursive=True)
     description = models.TextField(blank=True)
-    tags = TagField()
+    tags = TaggableManager(blank=True)
     uploaded = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
@@ -52,7 +53,7 @@ class Audio(models.Model):
 class PhotoSet(models.Model):
     """PhotoSet model"""
     title = models.CharField(max_length=255)
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True)
     description = models.TextField(blank=True)
     cover_photo = models.ForeignKey('Photo', blank=True, null=True)
     photos = models.ManyToManyField('Photo', related_name='photo_sets')
@@ -81,29 +82,19 @@ class Photo(models.Model):
         ('http://creativecommons.org/licenses/by-sa/2.0/',      'CC Attribution-ShareAlike'),
     )
     title = models.CharField(max_length=255)
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True)
     photo = models.FileField(upload_to="photos")
     taken_by = models.CharField(max_length=100, blank=True)
     license = models.URLField(blank=True, choices=LICENSES)
     description = models.TextField(blank=True)
-    tags = TagField()
+    tags = TaggableManager(blank=True)
     uploaded = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    _exif = models.TextField(blank=True) 
+    original = models.DateTimeField(editable=False, blank=True, null=True,
+                                    verbose_name='Original Creation Date')
 
     class Meta:
         db_table = 'media_photos'
-
-    def _set_exif(self, d):
-        self._exif = simplejson.dumps(d)
-
-    def _get_exif(self):
-        if self._exif:
-            return simplejson.loads(self._exif)
-        else:
-            return {}
-
-    exif = property(_get_exif, _set_exif, "Photo EXIF data, as a dict.")
 
     def __unicode__(self):
         return '%s' % self.title
@@ -112,15 +103,34 @@ class Photo(models.Model):
     def url(self):
         return '%s%s' % (settings.MEDIA_URL, self.photo)
 
+    @property
+    def exif(self):
+        return show_exif(self.photo.path)
+
     @permalink
     def get_absolute_url(self):
         return ('photo_detail', None, { 'slug': self.slug })
+
+    def save(self):
+        # The model's real save must be called first, so that the file is
+        # uploaded and exif data can be accessed.
+        super(Photo, self).save()
+        # If the original date is not set, set it based on exif data. If it can
+        # not be found, set it to the current time.
+        if self.original is None:
+            if 'DateTimeOriginal' in self.exif:
+                self.original = datetime.strptime(self.exif['DateTimeOriginal'][:19], '%Y:%m:%d %H:%M:%S')
+            else:
+                self.original = datetime.now()
+            # The real save must be called *again*, so that the original date
+            # value can be saved.
+            super(Photo, self).save()
 
 
 class VideoSet(models.Model):
     """VideoSet model"""
     title = models.CharField(max_length=255)
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True)
     description = models.TextField(blank=True)
     videos = models.ManyToManyField('Video', related_name='video_sets')
     created = models.DateTimeField(auto_now_add=True)
@@ -140,11 +150,11 @@ class VideoSet(models.Model):
 class Video(models.Model):
     """Video model"""
     title = models.CharField(max_length=255)
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True)
     still = models.FileField(upload_to='video_stills', blank=True, help_text='An image that will be used as a thumbnail.')
     video = models.FilePathField(path=settings.MEDIA_ROOT+'videos/', recursive=True)
     description = models.TextField(blank=True)
-    tags = TagField()
+    tags = TaggableManager(blank=True)
     uploaded = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 

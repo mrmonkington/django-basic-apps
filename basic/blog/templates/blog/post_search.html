@@ -2,37 +2,31 @@
 
 {% load i18n %}
 
-{% block title %}{% trans "Post search" %}{% endblock %}
-{% block body_class %}{{ block.super }} post_search{% endblock %}
-
-
-{% block content_title %}
-  <h2>{% trans "Search" %}</h2>
-{% endblock %}
+{% block title %}{{ block.super }} | {% trans "Blog Search" %}{% endblock %}
+{% block body_id %}post_search{% endblock %}
 
 
 {% block content %}
-  <form action="." method="get" id="post_search_form">
-    <p>
-      <input type="text" name="q" value="{{ search_term }}" id="search">
-      <input type="submit" class="button" value="{% trans "Search" %}">
-    </p>
-  </form>
+    <h1>{% trans "Blog Search" %}</h1>
+
+    <form action="." method="get" id="post_search_form">
+        <input type="text" name="q" value="{{ search_term }}">
+        <input type="submit" class="button" value="{% trans "Search" %}">
+    </form>
+
+    {% if message %}
+    <p class="message">{{ message }}</p>
+    {% endif %}
   
-  {% if message %}
-  <p class="message">{{ message }}</p>
-  {% endif %}
-  
-  {% if object_list %}
-  <div class="post_list">
-    {% for post in object_list %}
-    <div>
-      <h3 class="title"><a href="{{ post.get_absolute_url }}" title="{% trans "View this post" %}">{{ post.title }}</a></h3>
-      <p class="date">{{ post.publish|date:"Y F d" }}</p>
-      <p class="tease">{{ post.tease|safe }}</p>
-      <p class="comments">{% if comment_count %}{{ comment_count }} {% blocktrans with comment_count|pluralize as pluralize %}comment{{ pluralize }}{% endblocktrans %}{% endif %}</p>
-    </div>
-    {% endfor %}
-  </div>
-  {% endif %}
+    {% if object_list %}
+    <h2>{% trans "Results for" %}: <span class="query">{{ search_term }}</span></h2>
+    <ul class="post_list">
+        {% for post in object_list %}
+        <li>
+            <h3 class="title"><a href="{{ post.get_absolute_url }}" title="{% trans "View this post" %}">{{ post.title }}</a></h3>
+            <p class="date">{{ post.publish|date }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 {% endblock %}

@@ -1,20 +1,16 @@
 {% extends "blog/base_blog.html" %}
 
-{% load i18n %}
+{% load i18n taggit_extras %}
 
-{% block title %}{% trans "Post tags" %}{% endblock %}
-{% block body_class %}{{ block.super }} tag_list{% endblock %}
-
-
-{% block content_title %}
-  <h2>{% trans "Post tags" %}</h2>
-{% endblock %}
-
+{% block title %}{{ block.super }} | {% trans "Tags" %}{% endblock %}
+{% block body_id %}tag_list{% endblock %}
 
 {% block content %}
-  <ul class="link_list">
-    {% for tag in object_list %}
-    <li><a href="{{ tag.get_absolute_url }}" title="{% trans "View posts tagged" %} {{ tag }}">{{ tag }}</a></li>
+    <h1>{% trans "Tag Cloud" %}</h1>
+    {% get_tagcloud as tags for 'basic.blog.post' %}
+    <ul class="cloud">
+    {% for tag in tags %}
+    <li style="font-size: {{ tag.weight|floatformat:0 }}em"><a href="{% url blog_tag_detail slug=tag.slug  %}" title="{% trans "See" %} {{ tag.num_times }} {% trans "items tagged with" %} {{ tag }}">{{ tag }}</a></li>
     {% endfor %}
-  </ul>
+    </ul>
 {% endblock %}

@@ -8,16 +8,51 @@ To install any of the apps listed simply create a folder on your ``PYTHONPATH`` 
 
 Below are a list of per app dependancies:
 
+Revisions
+==========
+
+All Apps
+--------
+
+* Django Tagging has been replaced in favor of the more actively maintained `django-taggit <https://github.com/alex/django-taggit>`_
+
+Basic.Blog
+----------
+
+* Added a visit counter for each post.
+* Added `django-markup <https://github.com/bartTC/django-markup/>`_ for markup language support.
+* Updated feeds for Django 1.2+
+* Added a blog settings file
+* Added support for `Django WMD <https://github.com/pigmonkey/django-wmd/>`_
+* Added a Wordpress import script (``./manage.py wordpress_import``)
+* Tag cloud!
+* Massive template clean-up.
+* Added an auto-excerpt feature.
+* `Disqus <http://disqus.com/>`_ support.
+
+Basic.Media
+-----------
+
+* Added a property to access exif data.
+* Added an original creation date to all photos, based on exif.
+
+Basic.Search
+-----------
+
+* Created a new basic search app based on `Julien Phalip's code <http://julienphalip.com/post/2825034077/adding-search-to-a-django-site-in-a-snap>`_
+
 Dependencies
 ============
 
 * Basic Inlines are required to use the Blog app
 * Django Comments (http://www.djangoproject.com/documentation/add_ons/#comments) are required for the blog app
-* Django Tagging (http://code.google.com/p/django-tagging)
+* django-taggit (https://github.com/alex/django-taggit) is used for tagging
+* django-taggit-templatetags (https://github.com/feuervogel/django-taggit-templatetags) is used to generate a tag cloud
 * Markdown (http://www.djangoproject.com/documentation/add_ons/#markup)
 * BeautifulSoup (http://www.crummy.com/software/BeautifulSoup/) is required to use the blog and, subsequently, the inlines app.
 * Dateutil (http://labix.org/python-dateutil)
 * Django Registration for the invitations app
+* django-disqus (http://github.com/arthurk/django-disqus) is required if Disqus-powered comments are enabled.
 
 Inlines
 =======

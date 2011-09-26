@@ -1,0 +1,32 @@
+{% load i18n %} 
+<div id="comments">
+    <h2 class="comments_title">{% trans "Comments" %}</h2>
+{% if BLOG_USEDISQUS %}
+    {% include 'blog/comments_disqus.html' %}
+{% else %}
+    {% load comments %} 
+    {% get_comment_list for object as comment_list %}
+    {% if comment_list %}
+        {% for comment in comment_list %}
+        {% if comment.is_public %}
+        <div class="comment" id="c{{ comment.id }}">
+            <h3 class="name">
+                {% if comment.user_url %}<a href="{{ comment.user_url }}" title="{% trans "View" %} {% blocktrans with comment.user_name as user_name %}{{ user_name }}'s{% endblocktrans %} {% trans "website" %}">{{ comment.user_name }}</a>{% else %}{{ comment.user_name }}{% endif %} {% trans "says" %}...
+            </h3>
+            {{ comment.comment|urlizetrunc:"60"|linebreaks }}
+            <div class="date"><a href="{{ comment.get_absolute_url }}" title="{% trans "Permalink to" %} {% blocktrans with comment.user_name as user_name %}{{ user_name }}'s{% endblocktrans %} {% trans "comment" %}">{% trans "Posted" %} {{ comment.submit_date|date:"DATETIME_FORMAT" }}</a></div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    {% endif %}
+    {% if object.allow_comments %}
+    <h2>{% trans "Post a Comment" %}</h2>
+    {% render_comment_form for object %}
+    {% else %}
+    <div id="comment_form">
+    <h2>{% trans "Comments are closed" %}.</h2>
+    <p>{% trans "Comments have been closed for this post" %}.</p>
+    </div>
+    {% endif %}
+{% endif %}
+</div>
